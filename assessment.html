@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relationship Compatibility Assessment — Onimici</title>
+<meta name="description" content="Discover your relationship profile with Onimici's compatibility assessment. 20 questions about your values, goals, and readiness for a serious relationship.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ── Design tokens (match landing page exactly) ─────────────────────── */
+  :root{
+    --ink:#0A0A0A;
+    --paper:#FFFFFF;
+    --surface:#FAFAFA;
+    --line:#EAEAEA;
+    --navy:#1E3A5F;
+    --navy-soft:#EEF2F6;
+    --muted:#6B7280;
+    --coral:#FF5A4E;
+    --coral-deep:#E8463A;
+    --coral-soft:#FFEEEC;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;}
+  @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  a{color:inherit;text-decoration:none;}
+  :focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:4px;}
+
+  /* ── Nav ─────────────────────────────────────────────────────────────── */
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:760px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-size:18px;font-weight:700;letter-spacing:-0.02em;}
+  .nav-back{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:color .15s;}
+  .nav-back:hover{color:var(--ink);}
+
+  /* ── Page shell ──────────────────────────────────────────────────────── */
+  .page{max-width:680px;margin:0 auto;padding:48px 24px 96px;}
+
+  /* ── Intro header ────────────────────────────────────────────────────── */
+  .intro-badge{display:inline-block;background:var(--coral-soft);color:var(--coral-deep);font-size:12px;font-weight:700;padding:6px 14px;border-radius:100px;margin-bottom:20px;letter-spacing:.04em;text-transform:uppercase;}
+  .intro h1{font-size:clamp(28px,5vw,42px);font-weight:800;letter-spacing:-0.03em;line-height:1.1;}
+  .intro h1 .accent{color:var(--coral);}
+  .intro p{margin-top:16px;font-size:16px;line-height:1.65;color:var(--muted);max-width:540px;}
+  .intro-meta{margin-top:20px;display:flex;gap:20px;flex-wrap:wrap;}
+  .intro-meta-item{display:flex;align-items:center;gap:7px;font-size:14px;color:var(--muted);}
+  .intro-meta-item svg{flex-shrink:0;opacity:.6;}
+  .start-btn{margin-top:32px;}
+
+  /* ── Buttons ─────────────────────────────────────────────────────────── */
+  .btn-primary{background:var(--coral);color:#fff;padding:15px 30px;border-radius:100px;font-size:15px;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s ease,background .18s ease;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(255,90,78,0.28);}
+  .btn-primary:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 20px rgba(255,90,78,0.38);background:var(--coral-deep);}
+  .btn-primary:active{transform:scale(.98);}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+  .btn-ghost{border:1.5px solid var(--line);padding:14.5px 26px;border-radius:100px;font-size:15px;font-weight:600;display:inline-flex;align-items:center;gap:8px;background:#fff;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s;}
+  .btn-ghost:hover{background:var(--surface);border-color:var(--navy);}
+
+  /* ── Progress bar ────────────────────────────────────────────────────── */
+  .progress-wrap{position:sticky;top:57px;z-index:40;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 24px 14px;display:none;}
+  .progress-wrap.visible{display:block;}
+  .progress-header{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .progress-label{font-size:13px;font-weight:600;color:var(--ink);}
+  .progress-count{font-size:13px;color:var(--muted);}
+  .progress-bar-bg{max-width:680px;margin:0 auto;height:4px;background:var(--line);border-radius:100px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--coral),var(--coral-deep));border-radius:100px;transition:width .4s cubic-bezier(.4,0,.2,1);width:0%;}
+
+  /* ── Assessment form ─────────────────────────────────────────────────── */
+  #assessmentForm{display:none;}
+  #assessmentForm.visible{display:block;}
+
+  .section-divider{margin:48px 0 32px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .section-divider-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--coral-deep);}
+  .section-divider-title{margin-top:4px;font-size:18px;font-weight:700;letter-spacing:-0.015em;}
+
+  .question{margin-bottom:36px;}
+  .question-num{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin-bottom:8px;}
+  .question-text{font-size:17px;font-weight:700;letter-spacing:-0.015em;line-height:1.35;margin-bottom:16px;}
+  .options{display:flex;flex-direction:column;gap:8px;}
+  .option-label{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;cursor:pointer;transition:border-color .15s,background .15s,transform .15s;font-size:15px;font-weight:500;position:relative;}
+  .option-label:hover{border-color:var(--coral);background:var(--coral-soft);transform:translateX(2px);}
+  .option-label input[type="radio"]{appearance:none;width:16px;height:16px;border:2px solid var(--line);border-radius:50%;flex-shrink:0;transition:border-color .15s,background .15s;position:relative;}
+  .option-label input[type="radio"]:checked{border-color:var(--coral);background:var(--coral);}
+  .option-label input[type="radio"]:checked::after{content:'';position:absolute;inset:3px;background:#fff;border-radius:50%;}
+  .option-label:has(input:checked){border-color:var(--coral);background:var(--coral-soft);}
+
+  /* ── Submit row ──────────────────────────────────────────────────────── */
+  .submit-row{margin-top:48px;border-top:1px solid var(--line);padding-top:32px;text-align:center;}
+  .submit-row p{font-size:14px;color:var(--muted);margin-top:12px;}
+  .error-banner{display:none;margin-top:14px;padding:12px 16px;background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;font-size:14px;color:#B91C1C;text-align:left;}
+  .error-banner.visible{display:block;}
+
+  /* ── Results ─────────────────────────────────────────────────────────── */
+  #resultsSection{display:none;}
+  #resultsSection.visible{display:block;}
+
+  .results-header{text-align:center;padding:40px 0 32px;}
+  .results-icon{width:64px;height:64px;border-radius:50%;background:var(--coral);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;}
+  .results-header h2{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-0.025em;}
+  .results-header .profile-name{display:inline-block;margin-top:10px;background:var(--coral-soft);color:var(--coral-deep);font-size:13px;font-weight:700;padding:6px 16px;border-radius:100px;letter-spacing:.04em;text-transform:uppercase;}
+  .results-header p{margin-top:16px;font-size:16px;line-height:1.65;color:var(--muted);}
+
+  .results-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:32px 0;}
+  @media(max-width:500px){.results-grid{grid-template-columns:1fr;}}
+  .result-card{border:1px solid var(--line);border-radius:12px;padding:20px;background:#fff;}
+  .result-card-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
+  .result-card-value{font-size:22px;font-weight:800;letter-spacing:-0.02em;color:var(--ink);}
+  .result-card-sub{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.4;}
+
+  .score-bar-wrap{margin-top:24px;}
+  .score-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .score-bar-label{font-size:13px;font-weight:600;width:130px;flex-shrink:0;color:var(--ink);}
+  .score-bar-bg{flex:1;height:8px;background:var(--line);border-radius:100px;overflow:hidden;}
+  .score-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--coral),var(--coral-deep));transition:width .8s cubic-bezier(.16,1,.3,1);}
+  .score-bar-pct{font-size:12px;font-weight:700;color:var(--muted);width:32px;text-align:right;flex-shrink:0;}
+
+  .results-divider{border:none;border-top:1px solid var(--line);margin:36px 0;}
+
+  /* ── Waitlist form (post-results) ────────────────────────────────────── */
+  #waitlistSection{display:none;}
+  #waitlistSection.visible{display:block;}
+
+  .waitlist-header{text-align:center;margin-bottom:32px;}
+  .waitlist-header h2{font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-0.025em;}
+  .waitlist-header p{margin-top:12px;font-size:16px;line-height:1.65;color:var(--muted);}
+
+  .waitlist-card{border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 4px 24px -4px rgba(10,10,10,0.07);padding:32px;}
+  @media(max-width:480px){.waitlist-card{padding:24px 20px;}}
+
+  .field-group{margin-bottom:20px;}
+  .field-label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:7px;}
+  .field-label .req{color:var(--coral);}
+  .field-input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;font-size:15px;font-family:inherit;color:var(--ink);background:#fff;transition:border-color .15s,box-shadow .15s;}
+  .field-input:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft);}
+  .field-input.error{border-color:#EF4444;}
+
+  .radio-group{display:flex;gap:10px;flex-wrap:wrap;}
+  .radio-pill{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:100px;padding:10px 16px;cursor:pointer;font-size:14px;font-weight:500;transition:border-color .15s,background .15s;}
+  .radio-pill:hover{border-color:var(--coral);background:var(--coral-soft);}
+  .radio-pill input[type="radio"]{appearance:none;width:14px;height:14px;border:2px solid var(--line);border-radius:50%;flex-shrink:0;transition:border-color .15s,background .15s;}
+  .radio-pill input[type="radio"]:checked{border-color:var(--coral);background:var(--coral);}
+  .radio-pill:has(input:checked){border-color:var(--coral);background:var(--coral-soft);}
+
+  .waitlist-submit-row{margin-top:8px;}
+  .waitlist-submit-row .btn-primary{width:100%;justify-content:center;}
+  .waitlist-trust{margin-top:14px;font-size:13px;color:var(--muted);text-align:center;}
+
+  /* ── Success ─────────────────────────────────────────────────────────── */
+  #successSection{display:none;text-align:center;padding:64px 0;}
+  #successSection.visible{display:block;}
+  .success-icon{width:64px;height:64px;border-radius:50%;background:var(--coral);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 24px;box-shadow:0 6px 20px rgba(255,90,78,0.3);}
+  #successSection h2{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-0.025em;}
+  #successSection p{margin-top:14px;font-size:16px;line-height:1.65;color:var(--muted);max-width:460px;margin-left:auto;margin-right:auto;}
+
+  /* ── Spinner ─────────────────────────────────────────────────────────── */
+  .spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ── Footer ──────────────────────────────────────────────────────────── */
+  footer{border-top:1px solid var(--line);padding:32px 24px;}
+  .footer-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  .footer-logo{font-size:15px;font-weight:700;}
+  .footer-fine{font-size:13px;color:var(--muted);}
+
+  /* ── Animations ──────────────────────────────────────────────────────── */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .fade-up{animation:fadeUp .45s cubic-bezier(.16,1,.3,1) both;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="onimici-landing.html" class="logo">Onimici</a>
+    <a href="index.html" class="nav-back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to home
+    </a>
+  </div>
+</nav>
+
+<!-- STICKY PROGRESS (hidden until assessment starts) -->
+<div class="progress-wrap" id="progressWrap">
+  <div class="progress-header">
+    <span class="progress-label" id="progressLabel">Relationship Goals</span>
+    <span class="progress-count" id="progressCount">0 of 20</span>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressBarFill"></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- INTRO -->
+  <section id="introSection" class="fade-up">
+    <div class="intro-badge">Found Compatibility Assessment</div>
+    <div class="intro">
+      <h1>Understand your<br><span class="accent">relationship profile.</span></h1>
+      <p>20 questions across 10 dimensions — goals, communication, conflict, finances, and more. Takes about 3 minutes. No account needed.</p>
+      <div class="intro-meta">
+        <span class="intro-meta-item">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 4.5v3.5l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          ~3 minutes
+        </span>
+        <span class="intro-meta-item">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="13" height="13" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 7.5h6M4.5 5.5h6M4.5 9.5h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          20 questions
+        </span>
+        <span class="intro-meta-item">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5C4.19 1.5 1.5 4.19 1.5 7.5s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10V7.5M7.5 5V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Multiple choice
+        </span>
+      </div>
+      <div class="start-btn">
+        <button class="btn-primary" id="startBtn">
+          Start assessment
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASSESSMENT FORM -->
+  <form id="assessmentForm" novalidate>
+
+    <!-- SECTION 1: Relationship Goals -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 1 of 10</div>
+      <div class="section-divider-title">Relationship Goals</div>
+    </div>
+
+    <div class="question" id="q1-wrap">
+      <div class="question-num">Question 1</div>
+      <div class="question-text">How important is marriage to you?</div>
+      <div class="options" role="radiogroup" aria-labelledby="q1-label">
+        <label class="option-label"><input type="radio" name="q1" value="1"> Not Important</label>
+        <label class="option-label"><input type="radio" name="q1" value="2"> Slightly Important</label>
+        <label class="option-label"><input type="radio" name="q1" value="3"> Important</label>
+        <label class="option-label"><input type="radio" name="q1" value="4"> Very Important</label>
+        <label class="option-label"><input type="radio" name="q1" value="5"> Essential</label>
+      </div>
+    </div>
+
+    <div class="question" id="q2-wrap">
+      <div class="question-num">Question 2</div>
+      <div class="question-text">Do you want children in the future?</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q2" value="1"> Definitely No</label>
+        <label class="option-label"><input type="radio" name="q2" value="2"> Probably No</label>
+        <label class="option-label"><input type="radio" name="q2" value="3"> Unsure</label>
+        <label class="option-label"><input type="radio" name="q2" value="4"> Probably Yes</label>
+        <label class="option-label"><input type="radio" name="q2" value="5"> Definitely Yes</label>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Communication -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 2 of 10</div>
+      <div class="section-divider-title">Communication</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 3</div>
+      <div class="question-text">When something is bothering you, how likely are you to discuss it openly?</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q3" value="1"> Very Unlikely</label>
+        <label class="option-label"><input type="radio" name="q3" value="2"> Unlikely</label>
+        <label class="option-label"><input type="radio" name="q3" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q3" value="4"> Likely</label>
+        <label class="option-label"><input type="radio" name="q3" value="5"> Very Likely</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 4</div>
+      <div class="question-text">How important is daily communication in a relationship?</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q4" value="1"> Not Important</label>
+        <label class="option-label"><input type="radio" name="q4" value="2"> Slightly Important</label>
+        <label class="option-label"><input type="radio" name="q4" value="3"> Important</label>
+        <label class="option-label"><input type="radio" name="q4" value="4"> Very Important</label>
+        <label class="option-label"><input type="radio" name="q4" value="5"> Essential</label>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Conflict Resolution -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 3 of 10</div>
+      <div class="section-divider-title">Conflict Resolution</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 5</div>
+      <div class="question-text">During disagreements, I prefer to resolve issues quickly.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q5" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q5" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q5" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q5" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q5" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 6</div>
+      <div class="question-text">After conflict, I usually need personal space before talking.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q6" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q6" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q6" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q6" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q6" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Family & Children -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 4 of 10</div>
+      <div class="section-divider-title">Family &amp; Children</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 7</div>
+      <div class="question-text">Family plays an important role in my life.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q7" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q7" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q7" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q7" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q7" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 8</div>
+      <div class="question-text">I would consider relocating to build a future with the right partner.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q8" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q8" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q8" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q8" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q8" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Money & Finances -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 5 of 10</div>
+      <div class="section-divider-title">Money &amp; Finances</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 9</div>
+      <div class="question-text">I consider myself more of a saver than a spender.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q9" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q9" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q9" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q9" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q9" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 10</div>
+      <div class="question-text">Financial stability is important before making major life commitments.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q10" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q10" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q10" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q10" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q10" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <!-- SECTION 6: Lifestyle -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 6 of 10</div>
+      <div class="section-divider-title">Lifestyle</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 11</div>
+      <div class="question-text">I enjoy a structured routine.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q11" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q11" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q11" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q11" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q11" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 12</div>
+      <div class="question-text">I enjoy going out and socializing frequently.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q12" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q12" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q12" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q12" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q12" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <!-- SECTION 7: Values & Beliefs -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 7 of 10</div>
+      <div class="section-divider-title">Values &amp; Beliefs</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 13</div>
+      <div class="question-text">Shared values are more important than shared hobbies.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q13" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q13" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q13" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q13" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q13" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 14</div>
+      <div class="question-text">Honesty should always come before avoiding conflict.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q14" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q14" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q14" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q14" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q14" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <!-- SECTION 8: Career & Ambition -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 8 of 10</div>
+      <div class="section-divider-title">Career &amp; Ambition</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 15</div>
+      <div class="question-text">Career growth is a major priority for me.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q15" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q15" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q15" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q15" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q15" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 16</div>
+      <div class="question-text">I would support a partner pursuing a major career opportunity.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q16" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q16" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q16" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q16" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q16" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <!-- SECTION 9: Emotional Health -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 9 of 10</div>
+      <div class="section-divider-title">Emotional Health</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 17</div>
+      <div class="question-text">I am comfortable expressing my emotions.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q17" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q17" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q17" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q17" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q17" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 18</div>
+      <div class="question-text">I actively work on improving myself.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q18" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q18" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q18" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q18" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q18" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <!-- SECTION 10: Relationship Readiness -->
+    <div class="section-divider">
+      <div class="section-divider-label">Section 10 of 10</div>
+      <div class="section-divider-title">Relationship Readiness</div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 19</div>
+      <div class="question-text">I feel ready for a serious long-term relationship.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q19" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q19" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q19" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q19" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q19" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="question-num">Question 20</div>
+      <div class="question-text">I am willing to make sacrifices for a healthy relationship.</div>
+      <div class="options" role="radiogroup">
+        <label class="option-label"><input type="radio" name="q20" value="1"> Strongly Disagree</label>
+        <label class="option-label"><input type="radio" name="q20" value="2"> Disagree</label>
+        <label class="option-label"><input type="radio" name="q20" value="3"> Neutral</label>
+        <label class="option-label"><input type="radio" name="q20" value="4"> Agree</label>
+        <label class="option-label"><input type="radio" name="q20" value="5"> Strongly Agree</label>
+      </div>
+    </div>
+
+    <!-- HIDDEN EMAIL FOR TRACKING -->
+    <input type="hidden" id="assessmentEmail" name="assessmentEmail">
+
+    <!-- SUBMIT -->
+    <div class="submit-row">
+      <button type="submit" class="btn-primary" id="submitAssessmentBtn">
+        See my results
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p>All 20 questions must be answered before submitting.</p>
+      <div class="error-banner" id="assessmentError">Please answer all 20 questions before submitting.</div>
+    </div>
+  </form>
+
+  <!-- RESULTS -->
+  <section id="resultsSection">
+    <div class="results-header fade-up">
+      <div class="results-icon" id="resultsIcon">✦</div>
+      <h2>Your Relationship Profile</h2>
+      <div class="profile-name" id="profileName">—</div>
+      <p id="profileDesc"></p>
+    </div>
+
+    <div class="results-grid fade-up">
+      <div class="result-card">
+        <div class="result-card-label">Overall Score</div>
+        <div class="result-card-value" id="overallScore">—</div>
+        <div class="result-card-sub">out of 100</div>
+      </div>
+      <div class="result-card">
+        <div class="result-card-label">Readiness Level</div>
+        <div class="result-card-value" id="readinessLevel">—</div>
+        <div class="result-card-sub" id="readinessSub"></div>
+      </div>
+    </div>
+
+    <div class="score-bar-wrap fade-up" id="dimensionBars"></div>
+
+    <hr class="results-divider">
+
+    <!-- WAITLIST -->
+    <section id="waitlistSection">
+      <div class="waitlist-header">
+        <h2>Join the early access waitlist</h2>
+        <p>Your profile is saved. Share a few details and we'll notify you when Onimici launches — matching you with people who share your compatibility score.</p>
+      </div>
+
+      <div class="waitlist-card">
+        <div class="field-group">
+          <label class="field-label" for="wl_name">Full name <span class="req">*</span></label>
+          <input class="field-input" type="text" id="wl_name" placeholder="Your name" autocomplete="name">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Sex <span class="req">*</span></label>
+          <div class="radio-group" role="radiogroup">
+            <label class="radio-pill"><input type="radio" name="wl_sex" value="Male"> Male</label>
+            <label class="radio-pill"><input type="radio" name="wl_sex" value="Female"> Female</label>
+            <label class="radio-pill"><input type="radio" name="wl_sex" value="Non-binary"> Non-binary</label>
+            <label class="radio-pill"><input type="radio" name="wl_sex" value="Prefer not to say"> Prefer not to say</label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="wl_email">Email <span class="req">*</span></label>
+          <input class="field-input" type="email" id="wl_email" placeholder="you@email.com" autocomplete="email">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="wl_country">Country <span class="req">*</span></label>
+          <input class="field-input" type="text" id="wl_country" placeholder="e.g. United States" autocomplete="country-name">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="wl_city">City <span class="req">*</span></label>
+          <input class="field-input" type="text" id="wl_city" placeholder="e.g. Austin" autocomplete="address-level2">
+        </div>
+
+        <div class="waitlist-submit-row">
+          <button type="button" class="btn-primary" id="waitlistSubmitBtn">
+            Join the waitlist
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="error-banner" id="waitlistError"></div>
+        <p class="waitlist-trust">No spam. No noise. Just updates when we're ready.</p>
+      </div>
+    </section>
+  </section>
+
+  <!-- SUCCESS -->
+  <section id="successSection">
+    <div class="success-icon">✓</div>
+    <h2>You're on the list.</h2>
+    <p>We'll reach out as soon as Onimici is ready. We're building a small, intentional community — you'll be among the first matched.</p>
+  </section>
+
+</div><!-- /page -->
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-logo">Onimici</span>
+    <p class="footer-fine">© 2026 Onimici. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIG — replace with your deployed Google Apps Script URL
+// ─────────────────────────────────────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzd4yIMOVXu0GkWxaxhzP3KxFkGWfNgKK6wR_qvsWDdR-0XqCISC_oZZ4dgkQTlN-9T/exec';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Elements
+// ─────────────────────────────────────────────────────────────────────────────
+const introSection       = document.getElementById('introSection');
+const assessmentForm     = document.getElementById('assessmentForm');
+const progressWrap       = document.getElementById('progressWrap');
+const progressLabel      = document.getElementById('progressLabel');
+const progressCount      = document.getElementById('progressCount');
+const progressBarFill    = document.getElementById('progressBarFill');
+const resultsSection     = document.getElementById('resultsSection');
+const waitlistSection    = document.getElementById('waitlistSection');
+const successSection     = document.getElementById('successSection');
+const submitAssessmentBtn= document.getElementById('submitAssessmentBtn');
+const waitlistSubmitBtn  = document.getElementById('waitlistSubmitBtn');
+const assessmentError    = document.getElementById('assessmentError');
+const waitlistError      = document.getElementById('waitlistError');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Section labels for progress bar
+// ─────────────────────────────────────────────────────────────────────────────
+const sectionLabels = {
+  1:'Relationship Goals', 2:'Relationship Goals',
+  3:'Communication',      4:'Communication',
+  5:'Conflict Resolution',6:'Conflict Resolution',
+  7:'Family & Children',  8:'Family & Children',
+  9:'Money & Finances',  10:'Money & Finances',
+  11:'Lifestyle',        12:'Lifestyle',
+  13:'Values & Beliefs', 14:'Values & Beliefs',
+  15:'Career & Ambition',16:'Career & Ambition',
+  17:'Emotional Health', 18:'Emotional Health',
+  19:'Relationship Readiness',20:'Relationship Readiness'
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Progress tracking
+// ─────────────────────────────────────────────────────────────────────────────
+const TOTAL = 20;
+let answeredCount = 0;
+const answered = new Set();
+
+function updateProgress() {
+  const pct = Math.round((answeredCount / TOTAL) * 100);
+  progressBarFill.style.width = pct + '%';
+  progressCount.textContent = answeredCount + ' of ' + TOTAL;
+
+  // Find highest answered question number for section label
+  let maxAnswered = 0;
+  answered.forEach(n => { if (n > maxAnswered) maxAnswered = n; });
+  if (maxAnswered > 0) progressLabel.textContent = sectionLabels[maxAnswered];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Start assessment
+// ─────────────────────────────────────────────────────────────────────────────
+document.getElementById('startBtn').addEventListener('click', () => {
+  introSection.style.display = 'none';
+  assessmentForm.classList.add('visible');
+  progressWrap.classList.add('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Live progress: listen to all radio changes
+// ─────────────────────────────────────────────────────────────────────────────
+for (let i = 1; i <= TOTAL; i++) {
+  const radios = document.querySelectorAll(`[name="q${i}"]`);
+  radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (!answered.has(i)) {
+        answered.add(i);
+        answeredCount++;
+      }
+      updateProgress();
+      assessmentError.classList.remove('visible');
+    });
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Scoring helpers
+// ─────────────────────────────────────────────────────────────────────────────
+function getScore(name) {
+  const el = document.querySelector(`[name="${name}"]:checked`);
+  return el ? parseInt(el.value) : 0;
+}
+
+const DIMENSIONS = [
+  { label: 'Relationship Goals',    qs: [1, 2] },
+  { label: 'Communication',         qs: [3, 4] },
+  { label: 'Conflict Resolution',   qs: [5, 6] },
+  { label: 'Family',                qs: [7, 8] },
+  { label: 'Finances',              qs: [9,10] },
+  { label: 'Lifestyle',             qs: [11,12]},
+  { label: 'Values',                qs: [13,14]},
+  { label: 'Career',                qs: [15,16]},
+  { label: 'Emotional Health',      qs: [17,18]},
+  { label: 'Readiness',             qs: [19,20]},
+];
+
+function calcResults() {
+  const dims = DIMENSIONS.map(d => {
+    const raw = d.qs.reduce((sum, q) => sum + getScore(`q${q}`), 0);
+    const pct = Math.round((raw / (d.qs.length * 5)) * 100);
+    return { label: d.label, pct };
+  });
+
+  const totalRaw = dims.reduce((s, d) => s + d.pct, 0);
+  const overall  = Math.round(totalRaw / dims.length);
+
+  // Readiness dimension score
+  const readinessPct = dims.find(d => d.label === 'Readiness').pct;
+
+  // Profile classification
+  let profileName, profileDesc, profileIcon;
+  if (overall >= 85) {
+    profileName = 'Fully Ready';
+    profileIcon = '✦';
+    profileDesc = 'You have a clear vision for your future, strong self-awareness, and the emotional maturity needed for a serious partnership. You are ready.';
+  } else if (overall >= 70) {
+    profileName = 'Intentionally Growing';
+    profileIcon = '◈';
+    profileDesc = 'You are actively building toward a serious relationship. Your values are clear and your readiness is high — you may benefit from a partner who matches your growth mindset.';
+  } else if (overall >= 55) {
+    profileName = 'Exploring Your Path';
+    profileIcon = '◇';
+    profileDesc = 'You have a strong foundation but some areas may need more clarity — especially around goals or emotional expression. Self-reflection now will pay off deeply in a future relationship.';
+  } else {
+    profileName = 'Building Your Foundation';
+    profileIcon = '○';
+    profileDesc = 'You are on the journey. Some important dimensions — readiness, values, or communication — may still be developing. That is okay. Awareness is the first step.';
+  }
+
+  // Readiness level label
+  let readinessLevel, readinessSub;
+  if (readinessPct >= 80) { readinessLevel = 'High'; readinessSub = 'You feel prepared for commitment.'; }
+  else if (readinessPct >= 60) { readinessLevel = 'Moderate'; readinessSub = 'A few things to work through.'; }
+  else { readinessLevel = 'Developing'; readinessSub = 'More time or reflection may help.'; }
+
+  return { overall, dims, profileName, profileDesc, profileIcon, readinessLevel, readinessSub };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Assessment submission
+// ─────────────────────────────────────────────────────────────────────────────
+let savedAnswers = {};
+let savedResults = {};
+
+assessmentForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  if (answeredCount < TOTAL) {
+    assessmentError.classList.add('visible');
+    assessmentError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Collect answers
+  for (let i = 1; i <= TOTAL; i++) {
+    const el = document.querySelector(`[name="q${i}"]:checked`);
+    savedAnswers[`q${i}`] = el ? el.parentElement.textContent.trim() : '';
+  }
+
+  // Calculate
+  savedResults = calcResults();
+
+  // Render results
+  document.getElementById('resultsIcon').textContent   = savedResults.profileIcon;
+  document.getElementById('profileName').textContent   = savedResults.profileName;
+  document.getElementById('profileDesc').textContent   = savedResults.profileDesc;
+  document.getElementById('overallScore').textContent  = savedResults.overall;
+  document.getElementById('readinessLevel').textContent= savedResults.readinessLevel;
+  document.getElementById('readinessSub').textContent  = savedResults.readinessSub;
+
+  // Dimension bars
+  const barsEl = document.getElementById('dimensionBars');
+  barsEl.innerHTML = '';
+  savedResults.dims.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'score-bar-row';
+    row.innerHTML = `
+      <span class="score-bar-label">${d.label}</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:0%" data-pct="${d.pct}"></div></div>
+      <span class="score-bar-pct">${d.pct}%</span>
+    `;
+    barsEl.appendChild(row);
+  });
+
+  // Hide form, show results
+  assessmentForm.classList.remove('visible');
+  progressWrap.classList.remove('visible');
+  resultsSection.classList.add('visible');
+  waitlistSection.classList.add('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Animate bars after paint
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.score-bar-fill').forEach(el => {
+        el.style.width = el.dataset.pct + '%';
+      });
+    });
+  });
+
+  // Fire assessment data to Google Sheets (fire-and-forget)
+  // Note: assessment email will be sent after they enter it in the waitlist form
+  sendToSheet('assessment', { ...savedAnswers, profile: savedResults.profileName, overall_score: savedResults.overall, readiness: savedResults.readinessLevel });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Waitlist submission
+// ─────────────────────────────────────────────────────────────────────────────
+waitlistSubmitBtn.addEventListener('click', () => {
+  const name    = document.getElementById('wl_name').value.trim();
+  const sex     = document.querySelector('[name="wl_sex"]:checked');
+  const email   = document.getElementById('wl_email').value.trim();
+  const country = document.getElementById('wl_country').value.trim();
+  const city    = document.getElementById('wl_city').value.trim();
+  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  waitlistError.classList.remove('visible');
+
+  if (!name)              return showWaitlistError('Please enter your name.');
+  if (!sex)               return showWaitlistError('Please select your sex.');
+  if (!email || !emailRe.test(email)) return showWaitlistError('Please enter a valid email address.');
+  if (!country)           return showWaitlistError('Please enter your country.');
+  if (!city)              return showWaitlistError('Please enter your city.');
+
+  // Loading state
+  waitlistSubmitBtn.disabled = true;
+  waitlistSubmitBtn.innerHTML = '<span class="spinner"></span> Joining…';
+
+  const payload = {
+    name, sex: sex.value, email, country, city,
+    profile:       savedResults.profileName,
+    overall_score: savedResults.overall,
+    readiness:     savedResults.readinessLevel,
+    ...savedAnswers
+  };
+
+  // Send to Google Sheets (fire-and-forget + email)
+  sendToSheet('waitlist', payload);
+  
+  // Show success after brief delay
+  setTimeout(() => {
+    resultsSection.classList.remove('visible');
+    successSection.classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 300);
+});
+
+function showWaitlistError(msg) {
+  waitlistError.textContent = msg;
+  waitlistError.classList.add('visible');
+  waitlistError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Google Apps Script sender
+// ─────────────────────────────────────────────────────────────────────────────
+function sendToSheet(type, data) {
+  const payload = { type, ...data };
+
+  // Use URL-encoded body with no-cors to avoid CORS preflight,
+  // which Google Apps Script does not handle and silently drops.
+  const body = Object.entries(payload)
+    .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v ?? ''))
+    .join('&');
+
+  return fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body
+  }).catch(err => {
+    console.error('Error sending to sheet:', err);
+  });
+}
+</script>
+
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+  GOOGLE APPS SCRIPT — Full email-enabled version
+  
+  SETUP:
+  1. Go to script.google.com and create a new project
+  2. Replace the placeholder code with the code below
+  3. Find your Google Sheet ID (the long string in the sheet's URL)
+  4. Replace 'YOUR_SPREADSHEET_ID_HERE' with your actual ID
+  5. Deploy as Web app (Anyone, even anonymous)
+  6. Copy the deployment URL and paste it into APPS_SCRIPT_URL above
+  
+  See SETUP_GUIDE.md for detailed instructions.
+═══════════════════════════════════════════════════════════════════════════════
+
+// Get the Spreadsheet ID from your Google Sheet
+const SHEET_ID = 'YOUR_SPREADSHEET_ID_HERE';
+
+// Email configuration
+const FROM_EMAIL = 'noreply@onimici.com'; // Will show as "from your Google account"
+const FROM_NAME = 'Onimici';
+
+function doPost(e) {
+  try {
+    var params = e.parameter;
+    var type = params.type || 'unknown';
+    var ss = SpreadsheetApp.openById(SHEET_ID);
+
+    if (type === 'assessment') {
+      var email = params.email || '';
+      var profileName = params.profile || '';
+      var overallScore = params.overall_score || '';
+      
+      writeRow(ss, 'Assessments', buildAssessmentRow(params));
+      
+      // Send assessment confirmation email
+      if (email) {
+        sendAssessmentEmail(email, profileName, overallScore, params);
+      }
+    } else if (type === 'waitlist') {
+      var email = params.email || '';
+      var name = params.name || '';
+      
+      writeRow(ss, 'Waitlist', buildWaitlistRow(params));
+      
+      // Send waitlist confirmation email
+      if (email) {
+        sendWaitlistEmail(email, name, params.profile, params.overall_score);
+      }
+    }
+  } catch(err) {
+    Logger.log('Error: ' + err.toString());
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function writeRow(ss, sheetName, row) {
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+  }
+
+  // Write headers if sheet is empty
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(row.headers);
+  }
+  sheet.appendRow(row.values);
+}
+
+function buildAssessmentRow(p) {
+  return {
+    headers: ['Timestamp', 'Email', 'Profile', 'Overall Score', 'Readiness',
+              'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10',
+              'Q11', 'Q12', 'Q13', 'Q14', 'Q15', 'Q16', 'Q17', 'Q18', 'Q19', 'Q20'],
+    values: [new Date(), p.email || '', p.profile || '', p.overall_score || '', p.readiness || '',
+             p.q1 || '', p.q2 || '', p.q3 || '', p.q4 || '', p.q5 || '',
+             p.q6 || '', p.q7 || '', p.q8 || '', p.q9 || '', p.q10 || '',
+             p.q11 || '', p.q12 || '', p.q13 || '', p.q14 || '', p.q15 || '',
+             p.q16 || '', p.q17 || '', p.q18 || '', p.q19 || '', p.q20 || '']
+  };
+}
+
+function buildWaitlistRow(p) {
+  return {
+    headers: ['Timestamp', 'Name', 'Sex', 'Email', 'Country', 'City', 'Profile', 'Overall Score', 'Readiness',
+              'Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8', 'Q9', 'Q10',
+              'Q11', 'Q12', 'Q13', 'Q14', 'Q15', 'Q16', 'Q17', 'Q18', 'Q19', 'Q20'],
+    values: [new Date(), p.name || '', p.sex || '', p.email || '', p.country || '', p.city || '',
+             p.profile || '', p.overall_score || '', p.readiness || '',
+             p.q1 || '', p.q2 || '', p.q3 || '', p.q4 || '', p.q5 || '',
+             p.q6 || '', p.q7 || '', p.q8 || '', p.q9 || '', p.q10 || '',
+             p.q11 || '', p.q12 || '', p.q13 || '', p.q14 || '', p.q15 || '',
+             p.q16 || '', p.q17 || '', p.q18 || '', p.q19 || '', p.q20 || '']
+  };
+}
+
+function sendAssessmentEmail(toEmail, profileName, overallScore, params) {
+  var subject = 'Your Onimici Relationship Profile';
+  
+  var profileDescriptions = {
+    'Fully Ready': 'You have a clear vision for your future, strong self-awareness, and the emotional maturity needed for a serious partnership. You are ready for a meaningful relationship.',
+    'Intentionally Growing': 'You are actively building toward a serious relationship. Your values are clear and your readiness is high — you may benefit from a partner who matches your growth mindset.',
+    'Exploring Your Path': 'You have a strong foundation but some areas may need more clarity. Self-reflection now will pay off deeply in a future relationship.',
+    'Building Your Foundation': 'You are on the journey. Some important dimensions may still be developing. That is okay. Awareness is the first step.'
+  };
+
+  var profileDesc = profileDescriptions[profileName] || '';
+  var readinessScore = params.readiness || 'N/A';
+
+  var htmlBody = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif; line-height: 1.6; color: #0A0A0A; }
+        .container { max-width: 520px; margin: 0 auto; padding: 24px; }
+        .header { background: linear-gradient(135deg, #FF5A4E 0%, #E8463A 100%); color: white; padding: 32px 24px; border-radius: 12px; text-align: center; margin-bottom: 32px; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 800; }
+        .header p { margin: 8px 0 0; opacity: 0.95; }
+        .score-card { background: #FAFAFA; border: 1px solid #EAEAEA; border-radius: 12px; padding: 24px; margin-bottom: 20px; text-align: center; }
+        .score-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6B7280; margin-bottom: 8px; }
+        .score-value { font-size: 42px; font-weight: 800; color: #0A0A0A; }
+        .score-sub { font-size: 14px; color: #6B7280; margin-top: 6px; }
+        .profile-card { background: white; border: 1px solid #EAEAEA; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+        .profile-name { display: inline-block; background: #FFEEEC; color: #E8463A; font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 100px; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 12px; }
+        .profile-desc { font-size: 15px; line-height: 1.6; color: #6B7280; }
+        .footer { text-align: center; padding-top: 20px; border-top: 1px solid #EAEAEA; font-size: 13px; color: #6B7280; }
+        .cta { display: inline-block; background: #FF5A4E; color: white; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-weight: 600; margin: 20px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>✦</h1>
+          <h1>Your Profile</h1>
+          <p>Relationship Compatibility Assessment</p>
+        </div>
+
+        <div class="score-card">
+          <div class="score-label">Overall Score</div>
+          <div class="score-value">` + overallScore + `</div>
+          <div class="score-sub">out of 100</div>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-name">` + profileName + `</div>
+          <div class="profile-desc">` + profileDesc + `</div>
+        </div>
+
+        <div style="text-align: center;">
+          <p style="font-size: 14px; color: #6B7280;">Your readiness level: <strong>` + readinessScore + `</strong></p>
+          <a href="https://onimici.com/assessment.html" class="cta">View Full Results</a>
+        </div>
+
+        <div class="footer">
+          <p>This assessment helps you understand your readiness and values for a serious relationship. Next step: join our waitlist for early access to Onimici.</p>
+          <p style="margin-top: 12px;">© 2026 Onimici. All rights reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  try {
+    GmailApp.sendEmail(toEmail, subject, '', {
+      htmlBody: htmlBody,
+      from: FROM_NAME + ' <' + FROM_EMAIL + '>'
+    });
+  } catch(err) {
+    Logger.log('Email send error: ' + err.toString());
+  }
+}
+
+function sendWaitlistEmail(toEmail, name, profileName, overallScore) {
+  var subject = 'Welcome to the Onimici Waitlist';
+
+  var htmlBody = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif; line-height: 1.6; color: #0A0A0A; }
+        .container { max-width: 520px; margin: 0 auto; padding: 24px; }
+        .header { background: linear-gradient(135deg, #FF5A4E 0%, #E8463A 100%); color: white; padding: 32px 24px; border-radius: 12px; text-align: center; margin-bottom: 32px; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 800; }
+        .header p { margin: 8px 0 0; opacity: 0.95; }
+        .content { background: white; border: 1px solid #EAEAEA; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+        .footer { text-align: center; padding-top: 20px; border-top: 1px solid #EAEAEA; font-size: 13px; color: #6B7280; }
+        .highlight { background: #FAFAFA; padding: 16px; border-left: 3px solid #FF5A4E; border-radius: 6px; margin: 16px 0; font-size: 14px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>✓</h1>
+          <h1>You're on the list.</h1>
+          <p>Early access to Onimici</p>
+        </div>
+
+        <div class="content">
+          <p>Hi ` + name + `,</p>
+          <p>Thanks for taking the Onimici Compatibility Assessment. Your profile shows you're serious about finding a real, long-term relationship — exactly what we're building for.</p>
+          
+          <div class="highlight">
+            <strong>Your Profile:</strong> ` + profileName + ` (Score: ` + overallScore + `/100)<br>
+            <br>You're ready for intentional connections with people who match your values and goals.
+          </div>
+
+          <p>We're inviting early members to help shape the future of relationship-first dating. You'll be among the first to receive access when we launch.</p>
+
+          <p>In the meantime, we'll send updates on:</p>
+          <ul style="color: #6B7280;">
+            <li>Feature launches and platform improvements</li>
+            <li>Insights on building stronger relationships</li>
+            <li>Your exclusive access date</li>
+          </ul>
+
+          <p style="font-weight: 600; margin-top: 20px;">What's next?</p>
+          <p>We'll reach out within the next few weeks with more details. No spam. No noise. Just updates when we're ready.</p>
+        </div>
+
+        <div class="footer">
+          <p>© 2026 Onimici. All rights reserved.</p>
+          <p style="margin-top: 12px; font-size: 12px;"><a href="https://onimici.com" style="color: #FF5A4E; text-decoration: none;">Visit Onimici</a></p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  try {
+    GmailApp.sendEmail(toEmail, subject, '', {
+      htmlBody: htmlBody,
+      from: FROM_NAME + ' <' + FROM_EMAIL + '>'
+    });
+  } catch(err) {
+    Logger.log('Email send error: ' + err.toString());
+  }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+-->
+
+</body>
+</html>
